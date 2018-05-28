@@ -2,6 +2,7 @@
 #define LISTA_H
 
 #include <stdbool.h>
+#include <stdlib.h>
 
 /*******************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
@@ -71,3 +72,5 @@ size_t lista_largo(const lista_t *lista);
 // Pre: La lista fue creada.
 // Post: La lista fue destruida.
 void lista_destruir(lista_t *lista, void destruir_dato(void *));
+
+#endif
