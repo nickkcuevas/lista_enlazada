@@ -8,11 +8,11 @@
  *                DEFINICION DE LOS TIPOS DE DATOS
  ******************************************************************/
 
-struct nodo;
-typedef struct nodo nodo_t;
-
+struct lista;
 typedef struct lista lista_t;
 
+struct lista_iter;
+typedef struct lista_iter lista_iter_t;
 
 /*******************************************************************
  *                PRIMITIVAS DE LISTA ENLAZADA
@@ -72,5 +72,38 @@ size_t lista_largo(const lista_t *lista);
 // Pre: La lista fue creada.
 // Post: La lista fue destruida.
 void lista_destruir(lista_t *lista, void destruir_dato(void *));
+
+/*******************************************************************
+ *                PRIMITIVAS DE ITERADOR INTERNO
+ ******************************************************************/
+
+void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra);
+
+
+/*******************************************************************
+ *                PRIMITIVAS DE ITERADOR EXTERNO
+ ******************************************************************/
+
+
+lista_iter_t *lista_iter_crear(lista_t *lista);
+
+
+bool lista_iter_avanzar(lista_iter_t *iter);
+
+
+void *lista_iter_ver_actual(const lista_iter_t *iter);
+
+
+bool lista_iter_al_final(const lista_iter_t *iter);
+
+
+void lista_iter_destruir(lista_iter_t *iter);
+
+
+bool lista_iter_insertar(lista_iter_t *iter, void *dato);
+
+
+void *lista_iter_borrar(lista_iter_t *iter);
+
 
 #endif
