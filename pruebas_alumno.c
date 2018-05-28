@@ -53,6 +53,7 @@ void pruebas_lista_pocos_elementos() {
     print_test("Lista insertar 3 al principio devuelve true", lista_insertar_primero(lista, lista_ver_ultimo(lista)) == true);   
     print_test("Lista ver primero devuelve 3", get_int(lista_ver_primero(lista)) == elementos[2]);
     print_test("Lista largo devuelve 3", lista_largo(lista) == 3);
+    print_test("Lista insertar 1 al final devuelve true", lista_insertar_ultimo(lista, &elementos[0]) == true);
 
     lista_destruir(lista, NULL);
     print_test("La lista fue destruida", true);
