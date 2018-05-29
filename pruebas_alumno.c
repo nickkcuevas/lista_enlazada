@@ -1,9 +1,10 @@
 #include "lista.h"
 #include "testing.h"
+#include "pila.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+size_t CANT_GUARDAR = 500; 
 
 /* *****************************************************************
  *                    FUNCIONES AUXILIARES
@@ -13,6 +14,9 @@ int get_int(void* dato){
     return *((int*)dato);
 }
 
+void pila_destruir_wrapper(void* pila){
+    pila_destruir(pila);
+}
 
 // /* ******************************************************************
 //  *                   PRUEBAS UNITARIAS ALUMNO
@@ -54,7 +58,7 @@ void pruebas_lista_pocos_elementos() {
     print_test("Lista ver primero devuelve 3", get_int(lista_ver_primero(lista)) == elementos[2]);
     print_test("Lista largo devuelve 3", lista_largo(lista) == 3);
     print_test("Lista insertar 1 al final devuelve true", lista_insertar_ultimo(lista, &elementos[0]) == true);
-
+    
     lista_destruir(lista, NULL);
     print_test("La lista fue destruida", true);
 }
@@ -62,6 +66,31 @@ void pruebas_lista_pocos_elementos() {
 
 void pruebas_lista_volumen() {
     printf("INICIO DE PRUEBAS LISTA VOLUMEN \n");
+
+    lista_t* lista = lista_crear();    
+    pila_t** pilas = malloc(CANT_GUARDAR * sizeof(pila_t*));
+    for (int i=0; i< CANT_GUARDAR; i++){
+        pila_t* pila = pila_crear();
+        pilas[i] = pila;
+    }
+    bool insertando_ok = true;
+    for (int i=0; i< CANT_GUARDAR; i++){
+        if(!lista_insertar_primero(lista, pilas[i])){
+            insertando_ok = false;
+        }
+    }
+    printf("Lista insertar al principio ");
+    printf("%zd elementos de tipo pila ", CANT_GUARDAR);
+    print_test("devuelve True", insertando_ok == true);
+    print_test("Lista esta vacia devuelve False", lista_esta_vacia(lista) == false);
+    printf("Lista largo devuelve ");
+    printf("%zd", CANT_GUARDAR);
+    print_test("", lista_largo(lista) == CANT_GUARDAR);
+    
+
+    lista_destruir(lista, pila_destruir_wrapper);
+    free(pilas);
+    print_test("Se eliminaron todos los elementos de la Lista", true);
 }
 
 
