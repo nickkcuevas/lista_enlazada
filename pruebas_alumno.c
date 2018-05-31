@@ -4,7 +4,8 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-size_t CANT_GUARDAR = 500; 
+size_t CANT_INSERTAR_INICIO = 200;
+size_t CANT_INSERTAR_ULTIMO = 300; 
 
 /* *****************************************************************
  *                    FUNCIONES AUXILIARES
@@ -68,28 +69,47 @@ void pruebas_lista_volumen() {
     printf("INICIO DE PRUEBAS LISTA VOLUMEN \n");
 
     lista_t* lista = lista_crear();    
-    pila_t** pilas = malloc(CANT_GUARDAR * sizeof(pila_t*));
-    for (int i=0; i< CANT_GUARDAR; i++){
+    pila_t** pilas_inicio = malloc(CANT_INSERTAR_INICIO * sizeof(pila_t*));
+    for (int i=0; i< CANT_INSERTAR_INICIO; i++){
         pila_t* pila = pila_crear();
-        pilas[i] = pila;
+        pilas_inicio[i] = pila;
     }
-    bool insertando_ok = true;
-    for (int i=0; i< CANT_GUARDAR; i++){
-        if(!lista_insertar_primero(lista, pilas[i])){
-            insertando_ok = false;
+    bool insertando_primero_ok = true;
+    for (int i=0; i< CANT_INSERTAR_INICIO; i++){
+        if(!lista_insertar_primero(lista, pilas_inicio[i])){
+            insertando_primero_ok = false;
         }
     }
     printf("Lista insertar al principio ");
-    printf("%zd elementos de tipo pila ", CANT_GUARDAR);
-    print_test("devuelve True", insertando_ok == true);
+    printf("%zd elementos de tipo pila ", CANT_INSERTAR_INICIO);
+    print_test("devuelve True", insertando_primero_ok == true);
     print_test("Lista esta vacia devuelve False", lista_esta_vacia(lista) == false);
     printf("Lista largo devuelve ");
-    printf("%zd", CANT_GUARDAR);
-    print_test("", lista_largo(lista) == CANT_GUARDAR);
+    printf("%zd", CANT_INSERTAR_INICIO);
+    print_test("", lista_largo(lista) == CANT_INSERTAR_INICIO);
     
-
+    pila_t** pilas_final = malloc(CANT_INSERTAR_ULTIMO * sizeof(pila_t*));
+    for (int i=0; i< CANT_INSERTAR_ULTIMO; i++){
+        pila_t* pila = pila_crear();
+        pilas_final[i] = pila;
+    }
+    bool insertando_ultimo_ok = true;
+    for (int i=0; i< CANT_INSERTAR_ULTIMO; i++){
+        if(!lista_insertar_ultimo(lista, pilas_final[i])){
+            insertando_ultimo_ok = false;
+        }
+    }
+    
+    printf("Lista insertar al final ");
+    printf("%zd elementos de tipo pila ", CANT_INSERTAR_ULTIMO);
+    print_test("devuelve True", insertando_ultimo_ok == true);
+    printf("Lista largo devuelve ");
+    printf("%zd", CANT_INSERTAR_ULTIMO + CANT_INSERTAR_INICIO);
+    print_test("", lista_largo(lista) == CANT_INSERTAR_ULTIMO + CANT_INSERTAR_INICIO);
+    
     lista_destruir(lista, pila_destruir_wrapper);
-    free(pilas);
+    free(pilas_inicio);
+    free(pilas_final);
     print_test("Se eliminaron todos los elementos de la Lista", true);
 }
 
