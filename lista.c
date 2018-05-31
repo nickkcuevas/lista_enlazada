@@ -2,6 +2,7 @@
 #include <stdlib.h>
 struct nodo;
 typedef struct nodo nodo_t;
+typedef struct lista_iter lista_iter_t;
 
 struct nodo {
     void* dato;
@@ -13,6 +14,13 @@ struct lista {
     nodo_t* primero;
     nodo_t* ultimo;
 };
+
+
+struct lista_iter {
+    nodo_t* actual;
+    nodo_t* anterior;
+};
+
 
 /* *****************************************************************
  *                    FUNCIONES AUXILIARES
