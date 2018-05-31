@@ -92,7 +92,6 @@ void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *e
 lista_iter_t *lista_iter_crear(lista_t *lista);
 
 
-
 // Se devuelve true o false, dependiendo si el iterador esta posicionado al final o no.
 // Pre: El iterador fue creado.
 bool lista_iter_avanzar(lista_iter_t *iter);
