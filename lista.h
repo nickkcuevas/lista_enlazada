@@ -77,6 +77,10 @@ void lista_destruir(lista_t *lista, void destruir_dato(void *));
  *                PRIMITIVAS DE ITERADOR INTERNO
  ******************************************************************/
 
+
+// Se recorre toda la lista, y se visita cada uno de los elementos, a traves de la funcion visitar.
+// Cuando esta devuelve false, se termina la iteracion.
+// Pre: La lista fue creada.
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra);
 
 
