@@ -149,12 +149,17 @@ void* lista_ver_ultimo(const lista_t* lista){
 
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
     lista_iter_t* iter = lista_iter_crear(lista);
-    while(!lista_iter_al_final(iter)){
+    bool iterar = true;
+    while(!lista_iter_al_final(iter) && iterar){
         void* dato = lista_iter_ver_actual(iter);
-        if (visitar){
-            visitar(dato, extra);
+        if (!visitar){
+            if (!visitar(dato, extra)){
+                iterar = false;
+            }
         }
-        lista_iter_avanzar(iter);
+        if (iterar){
+            lista_iter_avanzar(iter);
+        }
     }
     lista_iter_destruir(iter);
     return;
