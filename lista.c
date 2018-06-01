@@ -207,5 +207,16 @@ void* lista_iter_borrar(lista_iter_t *iter){
 
 
 bool lista_iter_insertar(lista_iter_t *iter, void *dato){
-    return false;
+    nodo_t* nodo = nodo_crear(dato);
+    if (!nodo) return false;
+    if (lista_iter_al_final(iter)){
+        iter->actual = nodo;
+    }
+    else{
+        iter->anterior->proximo = nodo;
+        nodo->proximo = iter->actual;
+        iter->actual = nodo;
+    }
+    iter->lista->largo++;
+    return true;
 }

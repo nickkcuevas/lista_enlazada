@@ -133,6 +133,24 @@ void pruebas_lista_vacia_con_iterador_externo() {
 }
 
 
+void pruebas_lista_con_pocos_elementos_con_iterador_externo() {
+    printf("INICIO DE PRUEBAS LISTA CON POCOS ELEMENTOS CON ITERADOR EXTERNO \n");
+    lista_t* lista = lista_crear();
+    // int elementos[] = {1,2,3};
+    lista_iter_t* iter = lista_iter_crear(lista);
+
+    // print_test("Iterador insertar es true", lista_iter_insertar(iter, &elementos[0]) == true);
+    // print_test("Largo de lista es 1", lista_largo(lista) == 1);
+    // print_test("El iterador esta al final es false", lista_iter_al_final(iter) == false);
+    // print_test("Iterador insertar es true", lista_iter_insertar(iter, &elementos[0]) == true);
+    lista_destruir(lista, NULL);
+
+    lista_iter_destruir(iter);
+    print_test("La lista fue destruida", true);
+    print_test("El iterador fue destruido", true);
+}
+
+
 void pruebas_lista_alumno() {
     pruebas_lista_vacia();
     printf("------------------\n");
@@ -141,4 +159,6 @@ void pruebas_lista_alumno() {
     pruebas_lista_volumen();
     printf("------------------\n");
     pruebas_lista_vacia_con_iterador_externo();
+    printf("------------------\n");
+    pruebas_lista_con_pocos_elementos_con_iterador_externo();
 }
