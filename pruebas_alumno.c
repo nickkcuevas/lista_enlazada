@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 size_t CANT_INSERTAR_INICIO = 200;
-size_t CANT_INSERTAR_ULTIMO = 300; 
+size_t CANT_INSERTAR_ULTIMO = 300;
 
 /* *****************************************************************
  *                    FUNCIONES AUXILIARES
@@ -18,6 +18,22 @@ int get_int(void* dato){
 void pila_destruir_wrapper(void* pila){
     pila_destruir(pila);
 }
+
+void visitar(void* extra){
+
+}
+
+bool sumar(void* dato, void* extra){
+    int valor = *(int*)dato + *(int*)extra; 
+    *(int*)extra = valor;
+    return true;
+}
+
+bool visitar_wrapper(void* dato, void* extra){
+    return sumar(dato, extra);
+}
+
+
 
 // /* ******************************************************************
 //  *                   PRUEBAS UNITARIAS ALUMNO
@@ -136,18 +152,84 @@ void pruebas_lista_vacia_con_iterador_externo() {
 void pruebas_lista_con_pocos_elementos_con_iterador_externo() {
     printf("INICIO DE PRUEBAS LISTA CON POCOS ELEMENTOS CON ITERADOR EXTERNO \n");
     lista_t* lista = lista_crear();
-    // int elementos[] = {1,2,3};
+    int elementos[] = {1,2,3};
     lista_iter_t* iter = lista_iter_crear(lista);
 
-    // print_test("Iterador insertar es true", lista_iter_insertar(iter, &elementos[0]) == true);
-    // print_test("Largo de lista es 1", lista_largo(lista) == 1);
-    // print_test("El iterador esta al final es false", lista_iter_al_final(iter) == false);
-    // print_test("Iterador insertar es true", lista_iter_insertar(iter, &elementos[0]) == true);
+    print_test("Iterador esta al final es true", lista_iter_al_final(iter) == true);
+    print_test("Iterador insertar 1 es true", lista_iter_insertar(iter, &elementos[0]) == true);
+    print_test("Largo de lista es 1", lista_largo(lista) == 1);
+    print_test("Iterador ver actual es 1",get_int(lista_iter_ver_actual(iter)) == elementos[0]);
+    print_test("Iterador esta al final es false", lista_iter_al_final(iter) == false);
+    print_test("Iterador insertar 2 es true", lista_iter_insertar(iter, &elementos[1]) == true);
+    print_test("Largo de lista es 2", lista_largo(lista) == 2);
+    print_test("Iterador ver actual es 2",get_int(lista_iter_ver_actual(iter)) == elementos[1]);
+    print_test("Iterador esta al final es false", lista_iter_al_final(iter) == false);
+    print_test("Iterador avanzar es true", lista_iter_avanzar(iter) == true);
+    print_test("Iterador ver actual es 1",get_int(lista_iter_ver_actual(iter)) == elementos[0]);
+    print_test("Iterador esta al final es false", lista_iter_al_final(iter) == false);
+    print_test("Iterador avanzar es true", lista_iter_avanzar(iter) == true);
+    print_test("Iterador esta al final es true", lista_iter_al_final(iter) == true);
+    print_test("Iterador insertar 3 es true", lista_iter_insertar(iter, &elementos[2]) == true);
+    print_test("Largo de lista es 3", lista_largo(lista) == 3);
+    print_test("Iterador ver actual es 3",get_int(lista_iter_ver_actual(iter)) == elementos[2]);
+    
+    lista_iter_t* iter_borrar = iter;
+    iter = lista_iter_crear(lista);
+    lista_iter_destruir(iter_borrar);
+    
+    print_test("El primer iterador fue destruido", true);
+    print_test("Iterador esta al final es false", lista_iter_al_final(iter) == false);
+    print_test("Largo de lista es 3", lista_largo(lista) == 3);
+    print_test("Iterador ver actual es 2",get_int(lista_iter_ver_actual(iter)) == elementos[1]);
+    print_test("Iterador borrar es 2", get_int(lista_iter_borrar(iter)) == elementos[1]);
+    print_test("Largo de lista es 2", lista_largo(lista) == 2);
+    print_test("Iterador ver actual es 1",get_int(lista_iter_ver_actual(iter)) == elementos[0]);
+    print_test("Iterador borrar es 1", get_int(lista_iter_borrar(iter)) == elementos[0]);
+    print_test("Largo de lista es 1", lista_largo(lista) == 1);
+    print_test("Iterador ver actual es 3",get_int(lista_iter_ver_actual(iter)) == elementos[2]);
+    print_test("Iterador borrar es 3", get_int(lista_iter_borrar(iter)) == elementos[2]);
+    print_test("Largo de lista es 1", lista_largo(lista) == 0);
+    print_test("Iterador esta al final es true", lista_iter_al_final(iter) == true);
+    
+    print_test("Iterador insertar 1 es true", lista_iter_insertar(iter, &elementos[0]) == true);
+    print_test("Iterador insertar 2 es true", lista_iter_insertar(iter, &elementos[1]) == true);
+    print_test("Iterador insertar 3 es true", lista_iter_insertar(iter, &elementos[2]) == true);
+    print_test("Iterador avanzar es true", lista_iter_avanzar(iter) == true);
+    print_test("Iterador ver actual es 2",get_int(lista_iter_ver_actual(iter)) == elementos[1]);
+    print_test("Iterador borrar es 2", get_int(lista_iter_borrar(iter)) == elementos[1]);
+    print_test("Iterador ver actual es 1",get_int(lista_iter_ver_actual(iter)) == elementos[0]);
+    print_test("Iterador avanzar es true", lista_iter_avanzar(iter) == true);
+    print_test("Iterador esta al final es true", lista_iter_al_final(iter) == true);
+    print_test("Iterador borrar es NULL", lista_iter_borrar(iter) == NULL);
+    
+    lista_iter_destruir(iter);
     lista_destruir(lista, NULL);
 
-    lista_iter_destruir(iter);
     print_test("La lista fue destruida", true);
     print_test("El iterador fue destruido", true);
+}
+
+void pruebas_lista_con_iterador_interno() {
+    printf("INICIO DE PRUEBAS LISTA CON ITERADOR INTERNO \n");
+    lista_t* lista = lista_crear();
+    int elementos[] = {1,2,3,4,5};
+    int cant_elem = 5;
+    int total = 0;
+    bool insertando_primero_ok = true;
+    for (int i=0; i < cant_elem; i++){
+        total += elementos[i];
+        if (!lista_insertar_primero(lista, &elementos[i])){
+            insertando_primero_ok = false;
+        }
+    }
+    print_test("Lista insertar al principio primeros 5 numeros naturales es true", insertando_primero_ok == true);
+    int total_lista_iterar = 0;
+    lista_iterar(lista, visitar_wrapper, &total_lista_iterar);
+
+    printf("Lista total de iterar en Lista es %d", total);
+    print_test(" es true", total == total_lista_iterar);
+    lista_destruir(lista, NULL);
+    print_test("La lista fue destruida", true);
 }
 
 
@@ -161,4 +243,6 @@ void pruebas_lista_alumno() {
     pruebas_lista_vacia_con_iterador_externo();
     printf("------------------\n");
     pruebas_lista_con_pocos_elementos_con_iterador_externo();
+    printf("------------------\n");
+    pruebas_lista_con_iterador_interno();
 }

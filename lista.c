@@ -1,5 +1,6 @@
 #include "lista.h"
 #include <stdlib.h>
+#include <stdio.h>
 struct nodo;
 typedef struct nodo nodo_t;
 
@@ -142,12 +143,20 @@ void* lista_ver_ultimo(const lista_t* lista){
 }
 
 
-
 /* *****************************************************************
  *                    PRIMITIVAS DEL ITERADOR INTERNO
  * *****************************************************************/
 
 void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
+    lista_iter_t* iter = lista_iter_crear(lista);
+    while(!lista_iter_al_final(iter)){
+        void* dato = lista_iter_ver_actual(iter);
+        if (visitar){
+            visitar(dato, extra);
+        }
+        lista_iter_avanzar(iter);
+    }
+    lista_iter_destruir(iter);
     return;
 }
 
@@ -159,7 +168,7 @@ lista_iter_t *lista_iter_crear(lista_t *lista){
     lista_iter_t* iter = malloc(sizeof(lista_iter_t));
     if (!iter) return NULL;
     iter->lista = lista;
-    iter->actual = lista_ver_primero(lista);
+    iter->actual = lista->primero;
     iter->anterior = NULL;
     return iter;
 }
@@ -198,25 +207,37 @@ void* lista_iter_borrar(lista_iter_t *iter){
     if (lista_iter_al_final(iter)){
         return NULL;
     }
+    else if (iter->anterior == NULL){
+        iter->actual = iter->actual->proximo;
+        return lista_borrar_primero(iter->lista);
+    }
+    else if (iter->actual->proximo == NULL){
+        iter->lista->ultimo = iter->anterior;
+    }
     nodo_t* pivot = iter->actual;
     iter->actual = iter->actual->proximo;
-    void* dato = nodo_destruir(pivot);
+    iter->anterior->proximo = iter->actual;
     iter->lista->largo--;
-    return dato;
+    return nodo_destruir(pivot);
 }
 
 
 bool lista_iter_insertar(lista_iter_t *iter, void *dato){
-    nodo_t* nodo = nodo_crear(dato);
-    if (!nodo) return false;
     if (lista_iter_al_final(iter)){
-        iter->actual = nodo;
+        lista_insertar_ultimo(iter->lista, dato);
+        iter->actual = iter->lista->ultimo;
+    }
+    else if (iter->anterior == NULL){
+        lista_insertar_primero(iter->lista, dato);
+        iter->actual = iter->lista->primero;
     }
     else{
+        nodo_t* nodo = nodo_crear(dato);
+        if (!nodo) return false;
         iter->anterior->proximo = nodo;
         nodo->proximo = iter->actual;
         iter->actual = nodo;
+        iter->lista->largo++;
     }
-    iter->lista->largo++;
     return true;
 }
