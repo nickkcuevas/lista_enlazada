@@ -147,15 +147,13 @@ void* lista_ver_ultimo(const lista_t* lista){
  *                    PRIMITIVAS DEL ITERADOR INTERNO
  * *****************************************************************/
 
-void lista_iterar(lista_t *lista, bool visitar(void *dato, void *extra), void *extra){
+void lista_iterar(lista_t *lista, bool (*visitar)(void *dato, void *extra), void *extra){
     lista_iter_t* iter = lista_iter_crear(lista);
     bool iterar = true;
     while(!lista_iter_al_final(iter) && iterar){
         void* dato = lista_iter_ver_actual(iter);
-        if (!visitar){
-            if (!visitar(dato, extra)){
-                iterar = false;
-            }
+        if (!visitar || !visitar(dato, extra)){
+            iterar = false;
         }
         if (iterar){
             lista_iter_avanzar(iter);
