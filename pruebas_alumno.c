@@ -224,7 +224,7 @@ void pruebas_lista_con_iterador_interno() {
     }
     print_test("Lista insertar al principio primeros 5 numeros naturales es true", insertando_primero_ok == true);
     int total_lista_iterar = 0;
-    lista_iterar(lista, sumar, &total_lista_iterar);
+    lista_iterar(lista, visitar_wrapper, &total_lista_iterar);
 
     printf("Lista total de iterar en Lista es %d", total);
     print_test(" es true", total == total_lista_iterar);
